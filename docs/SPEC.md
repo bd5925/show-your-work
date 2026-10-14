@@ -309,7 +309,7 @@ Decision: build it as a portfolio piece with a product story, not as a business.
 
 **Open questions**
 
-- [ ] Does Claude Code's session format expose enough to reconstruct a build trail cleanly? Check one real session file before weekend 1.
+- [x] Does Claude Code's session format expose enough to reconstruct a build trail cleanly? **Yes** (checked Oct 14, 2026 against Claude Code 2.1.x). Each line carries `type`, `timestamp`, `sessionId`, `cwd`, `gitBranch`; assistant lines carry text and `tool_use` blocks (name + input), user lines carry prompts and `tool_result` blocks (with `is_error`). Titles come from `custom-title` / `ai-title` lines. Subagent transcripts live in `<sessionId>/subagents/agent-*.jsonl` and are skipped. Injected text (`isMeta`, compact summaries, `<task-notification>`, local-command output) is filtered. Single sessions reach 150 MB and a heavy user's folder runs to gigabytes, so the importer reads files one at a time and caps stored tool output at 4,000 characters.
 - [ ] How long are typical ChatGPT and Claude exports for a heavy user, and does the browser handle a 200 MB zip without choking?
 - [ ] Public or password-protected by default? Default public, password optional, is the current call.
 - [ ] Should the CRE Base repo be fully public or a sanitized module? Decide before the shipped card is written.

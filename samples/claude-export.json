@@ -1,0 +1,61 @@
+[
+  {
+    "uuid": "5a5a5a5a-0000-4000-8000-000000000001",
+    "name": "Rent roll cleanup plan",
+    "created_at": "2024-06-01T15:00:00.000000Z",
+    "updated_at": "2024-06-01T15:20:00.000000Z",
+    "account": { "uuid": "acc00000-0000-4000-8000-000000000000" },
+    "project_uuid": "b0b0b0b0-0000-4000-8000-000000000001",
+    "chat_messages": [
+      {
+        "uuid": "m1", "parent_message_uuid": "00000000-0000-4000-8000-000000000000",
+        "sender": "human", "created_at": "2024-06-01T15:00:00.123456Z", "text": "",
+        "content": [{ "type": "text", "text": "Before you write anything, break the rent roll cleanup into steps. Don't touch the formulas yet." }],
+        "attachments": [{ "file_name": "rent-roll-synthetic.csv", "file_size": 120, "file_type": "text/csv", "extracted_content": "unit,rent\n101,1000" }],
+        "files": []
+      },
+      {
+        "uuid": "m2", "parent_message_uuid": "m1",
+        "sender": "assistant", "created_at": "2024-06-01T15:00:30.000000Z", "text": "",
+        "content": [
+          { "type": "thinking", "thinking": "Synthetic reasoning the importer should skip." },
+          { "type": "tool_use", "name": "web_search", "input": { "query": "rent roll normalization checklist" } },
+          { "type": "tool_result", "name": "web_search", "content": [{ "type": "text", "text": "Synthetic search result." }], "is_error": false },
+          { "type": "text", "text": "Step 1: dedupe units. Step 2: normalize dates. Step 3: reconcile totals." }
+        ]
+      },
+      {
+        "uuid": "m3-old", "parent_message_uuid": "m2",
+        "sender": "human", "created_at": "2024-06-01T15:05:00.000000Z", "text": "",
+        "content": [{ "type": "text", "text": "An edited-away message that is not on the final branch." }]
+      },
+      {
+        "uuid": "m3", "parent_message_uuid": "m2",
+        "sender": "human", "created_at": "2024-06-01T15:06:00.000000Z", "text": "",
+        "content": [{ "type": "text", "text": "Actually, reconcile totals first, then dedupe." }]
+      },
+      {
+        "uuid": "m4", "parent_message_uuid": "m3",
+        "sender": "assistant", "created_at": "2024-06-01T15:06:20.000000Z", "text": "",
+        "content": [{ "type": "text", "text": "Reordered: reconcile, dedupe, normalize dates." }]
+      }
+    ]
+  },
+  {
+    "uuid": "5a5a5a5a-0000-4000-8000-000000000002",
+    "name": "Old-format chat",
+    "created_at": "2023-11-02T09:00:00.000000Z",
+    "updated_at": "2023-11-02T09:01:00.000000Z",
+    "chat_messages": [
+      { "uuid": "o1", "sender": "human", "created_at": "2023-11-02T09:00:00.000000Z", "text": "Summarize this memo in three bullets.", "attachments": [], "files": [] },
+      { "uuid": "o2", "sender": "assistant", "created_at": "2023-11-02T09:00:10.000000Z", "text": "- One\n- Two\n- Three", "attachments": [], "files": [] }
+    ]
+  },
+  {
+    "uuid": "5a5a5a5a-0000-4000-8000-000000000003",
+    "name": "",
+    "created_at": "2023-11-03T09:00:00.000000Z",
+    "updated_at": "2023-11-03T09:00:00.000000Z",
+    "chat_messages": []
+  }
+]
