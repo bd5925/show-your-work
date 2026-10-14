@@ -3,7 +3,7 @@
 Read `docs/SPEC.md` first. Revision 2 is the current plan: browser-based, local-first, heuristics first, LLM optional.
 
 ## What this is
-A static web app. User drops an AI-history export zip (ChatGPT, Claude) or a folder of Claude Code `.jsonl` sessions onto the page. Everything parses in the browser. Outputs: a shareable PNG card, an optional portfolio page, resume bullets.
+A static web app. User drops an AI-history export zip (ChatGPT, Claude, Grok) or a folder of Claude Code `.jsonl` sessions onto the page. Everything parses in the browser. Outputs: a shareable PNG card, an optional portfolio page, resume bullets.
 
 ## Stack (keep it boring)
 - Vite + TypeScript, no framework unless a component tree becomes painful (then Preact).
@@ -15,7 +15,7 @@ A static web app. User drops an AI-history export zip (ChatGPT, Claude) or a fol
 ## Layout
 ```
 src/
-  importers/      one file per source: chatgpt.ts, claude.ts, claudecode.ts, github.ts
+  importers/      one file per source: chatgpt.ts, claude.ts, grok.ts, claudecode.ts, github.ts
   schema.ts       the one normalized shape every importer returns
   redact.ts       pattern redaction + deny list; visible [redacted: …] markers
   stats.ts        counts, hours, streaks, tools, first prompt, longest build
@@ -30,7 +30,7 @@ samples/          small, fully synthetic sample exports for tests. NEVER commit 
 
 ## Normalized schema (every importer returns this)
 ```ts
-type Session = { id: string; source: 'chatgpt'|'claude'|'claudecode'|'other'; title?: string; startedAt: string; endedAt: string; turns: Turn[]; project?: string }
+type Session = { id: string; source: 'chatgpt'|'claude'|'grok'|'claudecode'|'other'; title?: string; startedAt: string; endedAt: string; turns: Turn[]; project?: string }
 type Turn = { role: 'user'|'assistant'|'tool'; at: string; text: string; tool?: string; meta?: Record<string, unknown> }
 ```
 
@@ -46,7 +46,7 @@ type Turn = { role: 'user'|'assistant'|'tool'; at: string; text: string; tool?: 
 - Commit at the end of every working session with a one-line note of what shipped.
 
 ## Order of work
-1. `schema.ts`, `importers/chatgpt.ts`, `importers/claude.ts`, `importers/claudecode.ts`, with synthetic samples and tests.
+1. `schema.ts`, `importers/chatgpt.ts`, `importers/claude.ts`, `importers/claudecode.ts`, `importers/grok.ts`, with synthetic samples and tests. Grok's export format is the least documented: get a real export first, inspect it, then write the importer; if there is no usable export, fall back to a paste-in importer for individual conversations.
 2. `redact.ts`, `stats.ts`, drop-zone UI that shows the stats.
 3. `card/` — design and PNG export. This is the growth engine; spend real time on the design.
 4. `moments.ts` heuristics, review queue UI.

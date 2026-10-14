@@ -38,7 +38,7 @@ What changes in the mechanics:
 - A "compare" mode: two people's cards side by side. Harmless, competitive, shareable.
 - "Your first prompt" on the card. Everyone's first prompt is embarrassing; that is why they will post it.
 - A tagline on every card that carries the product name and URL. The card is the ad.
-- Importers as community contributions: ChatGPT, Claude, Claude Code at launch; Gemini, Cursor, Copilot as "good first issues."
+- Importers as community contributions: ChatGPT, Claude, Grok, Claude Code at launch; Gemini, Cursor, Copilot as "good first issues."
 
 **Honest trade-off:** the Wrapped card can read as gimmicky to a hiring manager. Keep it off the portfolio page by default. The two faces share a codebase, not a page.
 
@@ -204,6 +204,7 @@ All four sources exist today and need no API access. Verify the export formats a
 | Claude (claude.ai) | Settings → Privacy → Export data. Emailed zip. | JSON of conversations with messages and timestamps; project files separate. | Same as above. Projects give context on sustained work. |
 | Claude Code | Already on disk: `~/.claude/projects/<project>/*.jsonl`. Note: Claude Code deletes transcripts older than `cleanupPeriodDays` (default 30) — set it high in `~/.claude/settings.json` before relying on this. | One JSONL file per session: user turns, assistant turns, tool calls, file edits, with timestamps. | The strongest evidence: a build trail. Shows planning, redirection, error handling, and what shipped. |
 | GitHub | Public repo URL or local clone. | Commit history with dates and messages. | Corroborates the Claude Code trail. A shipped card links commits to the sessions that produced them. |
+| Grok (xAI) | Account data export from grok.com / X settings, where offered. Format and availability must be verified against a real export before building; fall back to a paste-in importer if the export is unusable. | JSON, format unconfirmed. | Breadth; the X-native audience is loud and posts cards. |
 | Other (later) | Cursor, Gemini, Copilot chat exports; Zapier/Make run logs. | Varies. | Breadth. Not needed for v0.1. |
 
 Import is a local pipeline: unzip, normalize every source into one schema (session, turn, role, timestamp, text, tool name), run redaction, run extraction, keep everything in browser memory or local storage. The published page is generated from approved cards only; raw sessions never leave the machine.
