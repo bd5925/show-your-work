@@ -40,6 +40,7 @@ type Turn = { role: 'user'|'assistant'|'tool'; at: string; text: string; tool?: 
 ## Rules
 - Real exports never enter the repo. Tests run on `samples/` only.
 - Any text shown to a third party passes through `redact.ts` first.
+- Nothing leaves the browser except (a) redacted excerpts sent to Anthropic with the user's own key, after the user sees exactly what will be sent, and (b) approved cards on publish. Every other network call is a bug.
 - No scores, ratings, or rankings anywhere in the UI. Counts are fine.
 - Every card the user sees must carry the verbatim excerpt it came from.
 - Keep each importer under ~200 lines and independent; export formats change.
@@ -47,7 +48,12 @@ type Turn = { role: 'user'|'assistant'|'tool'; at: string; text: string; tool?: 
 
 ## Order of work
 1. `schema.ts`, `importers/chatgpt.ts`, `importers/claude.ts`, `importers/claudecode.ts`, `importers/grok.ts`, with synthetic samples and tests. Grok's export format is the least documented: get a real export first, inspect it, then write the importer; if there is no usable export, fall back to a paste-in importer for individual conversations.
-2. `redact.ts`, `stats.ts`, drop-zone UI that shows the stats.
+2. `redact.ts`, `stats.ts`, drop-zone UI that shows the stats. Same step, the local-only guarantees (see SPEC → Privacy → "Provably local"):
+   - Content-Security-Policy that blocks all outgoing requests (`connect-src 'none'` until `llm.ts` adds exactly `https://api.anthropic.com`); no analytics, no third-party scripts, nothing loaded from a CDN.
+   - Works offline after first load; a test asserts that importing the samples makes zero network requests.
+   - A runnable local copy: `npm run build` output (or a single-file HTML) that works when opened from disk.
+   - The build's git commit shown on the page, linking to the repo.
+   - README section "How to check this yourself": Wi-Fi off, Network tab, CSP header, run it locally.
 3. `card/` — design and PNG export. This is the growth engine; spend real time on the design.
 4. `moments.ts` heuristics, review queue UI.
 5. `llm.ts` optional extraction, `portfolio/` generator, provenance footer, deploy.

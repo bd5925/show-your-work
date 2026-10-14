@@ -216,6 +216,9 @@ The product fails if a candidate leaks a client's data or a hiring manager suspe
 **Privacy**
 
 - Local-first. Import, redaction, and extraction run on the user's machine. Publishing uploads only approved cards and the profile.
+- Provably local, not just promised. Open source shows the code but not that the live site runs it, so: a Content-Security-Policy that blocks outgoing requests (only `api.anthropic.com`, and only once the user adds a key), no analytics or third-party scripts, works with Wi-Fi off after loading, a copy users can run from their own disk, the build's git commit on the page, and a README section that walks a skeptic through checking all of it.
+- Users get their data through the official export buttons; the tool never signs in to their accounts, controls their browser, or scrapes anything.
+- The two moments data leaves the machine are labeled at the point of action: the optional AI extraction (show the exact redacted text before sending) and publishing (only approved cards).
 - Two-pass redaction: pattern-based (emails, phones, money, keys, paths, URLs), then a model pass that flags names, companies, addresses, and anything that reads as confidential. User confirms every replacement.
 - Deny list the user maintains: names, company names, project code names. Applied before any model sees the text.
 - Excerpt bounds are user-set. The extractor proposes; the user trims.
