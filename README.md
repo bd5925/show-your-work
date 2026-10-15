@@ -6,31 +6,42 @@ Drop your ChatGPT, Claude, Grok, or Claude Code export onto a page. Get a sharea
 
 > Built by a commercial real estate operator with no programming background, using Claude Code. The build itself is the first portfolio entry.
 
+## Who this is for
+
+People who own their AI account: freelancers, consultants, small-business operators, anyone working on a personal account — and employees whose employer has agreed. It does not work with company-controlled accounts (enterprise or team plans); those need the employer involved.
+
+## How your data stays yours
+
+Your chat history never leaves your phone. The app downloads your export directly from OpenAI, Anthropic, or xAI, computes the numbers on the device, and throws the file away. The only thing sent to our server is the numbers. The code is public, so anyone can check that.
+
+## Why a hiring manager can trust it
+
+Your phone's built-in security vouches that an unmodified copy of the app fetched the data straight from the AI company and did the math. We sign the result. The hiring manager clicks once, sees the signed numbers, the date, and where the data came from — and never sees a single chat.
+
 ## Why
 
-Employers have started testing "AI fluency" in interviews. Candidates have no way to prove it except claiming it. Meanwhile, the evidence already exists: every chat and every build session you've ever had is sitting in an export file. This tool reads those files and shows the moments that matter — where you caught the model being wrong, redirected it, set the constraints, verified the output, or shipped something real.
+Employers have started testing "AI fluency" in interviews. Candidates have no way to prove it except claiming it. Meanwhile, the evidence already exists: every chat and every build session you've ever had is sitting in an export file. This tool reads those files and shows, in numbers, how you actually work with AI — how much you double-check when stakes are high, how much you delegate and whether quality holds when you do, and how that has changed over time.
 
 ## What you get
 
-1. **A card** — one image of your AI history: sessions, hours, tools, the date you started, how many times you caught the AI being wrong, your most common kind of judgment, your longest build. Post it.
-2. **A portfolio page** — 6–12 verbatim excerpts, each labeled by the kind of judgment it shows, with your one-line annotation. For hiring managers. Optional.
-3. **Resume bullets** — the two or three lines your cards actually support, with the link.
+1. **A card** — one image of your AI history: sessions, hours, tools, the date you started, how many times you caught the AI being wrong, your longest build. Post it.
+2. **A verified profile page** — five charts, no chats: calibration by stakes, delegation vs. precision, growth over time with milestones, your categories as rates, failure and recovery. Signed, so a hiring manager can check it in one click. Optional.
+3. **Resume bullets** — the two or three lines your numbers actually support, with the link.
 
 ## How it works
 
 - You export your data from ChatGPT (Settings → Data controls → Export), Claude (Settings → Privacy → Export data), or Grok (account data export), or point it at your local Claude Code sessions (`~/.claude/projects/`).
-- The page parses the zip in your browser. Stats and heuristic judgment moments need no AI model at all.
-- Optionally, add your own Claude API key for deeper extraction. The key never leaves your browser.
-- Redaction runs before anything is shown: emails, phones, money, keys, paths, and any names you list. Redactions are visible as `[redacted: …]`, never silently removed.
-- You approve every card. Nothing is published that you didn't pick.
-- The published page carries a provenance footer: export hashes, import dates, counts. A receipt, not a score.
+- The web version parses the zip in your browser for the card and a private self-review. Nothing uploads.
+- The phone app is the verified path: it fetches the export itself from the AI company, computes on-device, and sends only numbers plus the phone's attestation.
+- You choose a whole project or a whole date range. Nothing inside it can be removed; the signed statement says what share of your account it is.
+- No scores. Rates with denominators. Humans judge.
 
 ## Principles
 
 - **Local-first.** Parsing, redaction, and extraction happen on your machine.
-- **Verbatim.** Excerpts are shown as they were, apart from visible redactions.
-- **No scores.** The tool labels and counts. Humans judge.
-- **You control it.** Every card is opt-in. Unpublish removes the page.
+- **Numbers only.** No chat content is ever shown to anyone.
+- **No scores.** Rates with denominators. Humans judge.
+- **You control it.** Publish or don't. Unpublish removes the page.
 
 ## Status
 
