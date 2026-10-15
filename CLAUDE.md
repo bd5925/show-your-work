@@ -19,7 +19,9 @@ src/
   schema.ts       the one normalized shape every importer returns
   redact.ts       pattern redaction + deny list; visible [redacted: …] markers
   stats.ts        counts, hours, streaks, tools, first prompt, longest build
-  moments.ts      heuristic judgment-moment detection (7 kinds, see SPEC)
+  categories.ts   the 30-category library + per-category heuristics
+  moments.ts      candidate-moment extraction, ranked pools, veto/refill
+  exhibits/       habit rates, calibration, growth, failure/recovery, delegation, breadth, trails
   llm.ts          optional Claude call with user-supplied key, same card shape
   card/           card layout + PNG render
   portfolio/      page generator + provenance footer
@@ -34,8 +36,11 @@ type Session = { id: string; source: 'chatgpt'|'claude'|'grok'|'claudecode'|'oth
 type Turn = { role: 'user'|'assistant'|'tool'; at: string; text: string; tool?: string; meta?: Record<string, unknown> }
 ```
 
-## Judgment-moment kinds (fixed vocabulary)
-`caught_error | redirected | set_constraints | decomposed | verified | declined_ai | shipped`
+## Categories (Revision 3 — see SPEC.md)
+A library of 30 categories in four families (judgment, expertise, working_style, character), defined once in `src/categories.ts` as `{ id, family, label, description, heuristic?: (turns) => Candidate[] }`. The candidate picks ≤7, orders them, sets a quota of 3–7 each. Extraction builds a ranked pool per category; vetoes pull the next-ranked moment. One moment, one category. Ship heuristics for the first ten (judgment family) before any model-based classification.
+
+## Exhibits (computed from the whole history, never from selected moments)
+`src/exhibits/`: habit rates (with denominators), calibration by stakes, growth curve by quarter, failure-and-recovery, where-the-model-caught-me, delegation map, domain breadth, build trails. Candidate can hide an exhibit, never edit its numbers. No exhibit renders as a single number or grade.
 
 ## Rules
 - Real exports never enter the repo. Tests run on `samples/` only.
@@ -49,7 +54,8 @@ type Turn = { role: 'user'|'assistant'|'tool'; at: string; text: string; tool?: 
 1. `schema.ts`, `importers/chatgpt.ts`, `importers/claude.ts`, `importers/claudecode.ts`, `importers/grok.ts`, with synthetic samples and tests. Grok's export format is the least documented: get a real export first, inspect it, then write the importer; if there is no usable export, fall back to a paste-in importer for individual conversations.
 2. `redact.ts`, `stats.ts`, drop-zone UI that shows the stats.
 3. `card/` — design and PNG export. This is the growth engine; spend real time on the design.
-4. `moments.ts` heuristics, review queue UI.
+4. `categories.ts` (first ten heuristics), `moments.ts` pools + veto/refill, review queue UI with pick/quota/order.
+4b. `exhibits/` — habit rates and calibration first; they are the page's reason to exist.
 5. `llm.ts` optional extraction, `portfolio/` generator, provenance footer, deploy.
 6. Benjamin's own card and portfolio live. Then launch per `docs/SPEC.md` → Launch strategy.
 

@@ -1,6 +1,6 @@
 # Show Your Work — Product Spec
 
-Oct 13, 2026 · Benjamin Adelmann · Revision 2
+Oct 14, 2026 · Benjamin Adelmann · Revision 3
 
 A free, open-source tool that turns a power user's real AI history — Claude, ChatGPT, Claude Code, GitHub — into a shareable profile of how they work with AI, and a verifiable portfolio for hiring managers. Goal as of revision 2: maximum reach, not revenue. The popularity of the tool is the sell; Benjamin's own portfolio is the first user.
 
@@ -41,6 +41,50 @@ What changes in the mechanics:
 - Importers as community contributions: ChatGPT, Claude, Grok, Claude Code at launch; Gemini, Cursor, Copilot as "good first issues."
 
 **Honest trade-off:** the Wrapped card can read as gimmicky to a hiring manager. Keep it off the portfolio page by default. The two faces share a codebase, not a page.
+
+## Revision 3 — categories, quotas, and the niche
+
+Two changes. The seven fixed kinds become a library the candidate chooses from, and the page stops competing with the resume. A resume already lists shipped projects; a live interview already shows ten minutes of the candidate at their most nervous. The niche is what neither can show: **habits across hundreds of sessions, over time, including the failures.** That only exists in the history, and nobody can produce it by hand.
+
+**The library: 30 categories in four families.** The candidate picks up to 7, orders them, and sets a quota of 3–7 moments for each.
+
+| Family | Categories |
+| --- | --- |
+| Judgment | Caught an error · Redirected a bad approach · Set constraints up front · Decomposed a big ask · Verified against a source · Declined to use AI · Changed my mind on evidence · Stopped before an irreversible step · Asked the question that mattered · Rejected "good enough" |
+| Expertise | Knew more than the model (domain correction) · Supplied the context the model lacked · Spotted a legal, financial, or compliance risk · Reconciled numbers that didn't match · Translated for a specific audience · Recognized a pattern across sessions · Chose the right tool or method · Wrote a specification that held up |
+| Working style | Planned before executing · Iterated to done · Persisted through failure · Recovered from a dead end · Scoped down or time-boxed · Documented for the next person · Built something reusable |
+| Character | Owned a mistake · Asked for critique and used it · Handled ambiguity without stalling · Pushed back on a bad ask · Kept the human part human |
+
+**The mechanic: pick, quota, fill, veto, refill.**
+
+1. Candidate picks ≤ 7 categories and orders them. Order is the page order.
+2. Candidate sets a quota per category (3–7). Default 4.
+3. Extraction runs once over every session and builds a ranked pool per category: every candidate moment, with an internal rationale ("why this one") and a strength rank. The pool is private to the candidate; the hiring manager never sees ranks or rationales.
+4. The top N fill the quota. Candidate reviews each: approve, trim the excerpt, rewrite the annotation, or veto.
+5. A veto pulls the next-ranked moment into the slot. Repeat until the quota is met or the pool is exhausted. Exhausted means the tool says so and offers to lower the quota or let the candidate nominate a session by hand.
+6. One moment belongs to one category. A moment that fits two is offered in the stronger one and withheld from the other.
+7. The candidate writes a one-line summary per category; the tool drafts it, the candidate owns it.
+
+**What comes off the hiring-manager page.** "Shipped" stops being a section. Shipped work stays as evidence links on the cards and in a one-line strip under the header, because the resume already covers it. The Wrapped card stays off the page.
+
+**What goes on: the exhibits only volume can produce.** These are the reason a hiring manager opens the link after the resume and before the interview. Each is derived from the whole history, not from selected moments, so the candidate cannot cherry-pick it; they can only choose whether to show it.
+
+| Exhibit | What it shows | Why it beats a live session |
+| --- | --- | --- |
+| Habit rates | Across all sessions: how often the candidate verified, pushed back, set constraints, planned first. Shown as rates, not scores ("verified in 41% of sessions where a number mattered"). | Ten minutes shows a performance. Four hundred sessions show a habit. Habits predict. |
+| Calibration by stakes | The same rates split by stakes: money, legal, code, writing, casual. The question is whether verification rises when stakes rise. | This is the single thing a hiring manager most wants to know about an AI user and cannot observe in an interview. |
+| Growth curve | Habit rates by quarter. New tools adopted, by date. The shape matters more than the level. | A career-changer's AI skill is often recent; the curve shows whether it is real. Nothing else on a resume shows trajectory. |
+| Failure and recovery | Dead ends, abandoned approaches, and what the candidate did next. Selected like other moments but from a category nobody volunteers. | Candidates never show failure on a resume or in an interview. Showing it, with the recovery, is the most credible thing on the page. |
+| Where the model caught me | Moments where the AI corrected the candidate and the candidate accepted it. | Honesty signal. A person who shows this is a person who will tell you when they are wrong. |
+| Delegation map | What the candidate hands to AI and what they keep, inferred from behavior, not stated. Shown as two short lists. | Revealed preference beats a stated one. The "when I don't use AI" paragraph becomes evidence instead of a claim. |
+| Domain breadth | A small map of the subject areas the history covers (finance, legal, code, writing, operations) with session counts. | Shows range without listing skills. A hiring manager sees transferability. |
+| Build trails | For each shipped thing: the sessions and commits that produced it, as a dated line. | Keeps the shipped work, but as proof of process rather than a claim of outcome. |
+
+**Guardrails on the exhibits.** Rates are shown with their denominators. No exhibit ever renders as a single number or a grade. The candidate can hide any exhibit but cannot edit its numbers; the provenance footer says which exhibits are hidden. Stakes classification is heuristic and labeled as such.
+
+**What this does to the build.** Extraction now has three jobs: classify every user turn by category (cheap, batched), compute the exhibits from the full history (local, no model needed for most), and rank pools per category (model, once). The browser-only constraint holds for stats and heuristics; category classification over hundreds of sessions needs the user's API key or a very good heuristic pass. Ship heuristics for ten categories first; the other twenty are model-only until proven otherwise.
+
+**Revised hiring-manager page order:** header · habit rates and calibration strip · the candidate's categories in their order, quota-filled · failure and recovery · where the model caught me · delegation map · growth curve · domain breadth · build trails · provenance footer. Ninety seconds for the first two zones; the rest for whoever keeps reading.
 
 ## Launch strategy
 
