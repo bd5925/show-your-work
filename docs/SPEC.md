@@ -1,6 +1,6 @@
 # Show Your Work — Product Spec
 
-Oct 14, 2026 · Benjamin Adelmann · Revision 9
+Oct 14, 2026 · Benjamin Adelmann · Revision 10
 
 A free, open-source tool that turns a power user's real AI history — Claude, ChatGPT, Claude Code, GitHub — into a shareable profile of how they work with AI, and a verifiable portfolio for hiring managers. Goal as of revision 2: maximum reach, not revenue. The popularity of the tool is the sell; Benjamin's own portfolio is the first user.
 
@@ -256,6 +256,35 @@ Supersedes earlier revisions where they differ. Three decisions.
 **Repository stays public.** The spec, verifier, and exhibit code are the trust and the moat: a verifier nobody can read is not trusted, a spec nobody can see is not adopted, and the launch depends on both. Any employer-side product is built later in a separate private repository on top (open core).
 
 **Page, final for now:** name · signed statement (issuer, account size, included unit, date, click to verify) · calibration slope · rung × precision · growth with milestones · category radar · failure-and-recovery rate · receipt.
+
+## Revision 10 — the attested app replaces the server verifier
+
+Supersedes the verifier design in Revisions 7–9. No session content ever reaches the project's servers.
+
+**Why self-reported integrity fails.** A fingerprint of the app's code is a number any copy of the code can produce. A tampered app keeps the original beside it and answers every challenge the way the original would. The website cannot distinguish the real app from a fake that knows what the real app would say. Rejected.
+
+**What works: hardware attestation from the phone.** Apple's App Attest and Google's Play Integrity are built for this. The device's secure hardware signs a statement that an unmodified build of a specific app, from a specific developer, is running on a genuine device. The website checks that signature against Apple's or Google's keys, never against the app's own word.
+
+**The flow.**
+1. The candidate installs the app on a phone (iOS or Android). The export link arrives by email.
+2. The app downloads the export itself, directly from the provider's domain. It accepts links only on an allowlist (openai.com, anthropic.com, x.ai and their storage domains) and records which domain served the file. If the link needs a login, the app opens the provider's login inside itself and downloads with that session, still on the device.
+3. The app computes every exhibit on the phone, using the same open-source exhibit code as the local web mode.
+4. The app sends the website: the exhibit values with denominators, the account histogram and included unit, the export file's hash, the serving domain, and the device attestation. Nothing else.
+5. The website validates the attestation with Apple or Google, signs the numbers with the project key, and serves the verify page. The hiring manager clicks it in the interview.
+
+**What it proves.** A genuine, unmodified build of the public app, on a genuine device, fetched a file from the provider's domain and computed these numbers from it. Defeating it means defeating Apple's or Google's hardware security, not editing a file.
+
+**Reproducible builds.** The app is open source and built reproducibly, so anyone can confirm that the attested build hash matches the public code. Without this, the attestation only proves "an app the project published," not "the code you can read."
+
+**Liability.** The project's servers receive counts and rates only. No chat content, no export, no excerpt, by construction.
+
+**Limits, stated on the verify page.** Phone-first: desktop attestation is weaker and is not relied on for the verified path (desktop stays local mode: card and self-review). The attestation proves the data came from the provider's servers through a genuine app; it does not prove who was at the keyboard. A fresh account shows as a thin histogram; audit mode, when a provider implements it, closes the rest.
+
+**Residual threats and answers.** Doctored export supplied by the user: impossible, the app fetches from the provider's domain itself. Man-in-the-middle on the user's own device: certificate pinning in the app plus the attestation's genuine-device check. Fake or staged account: visible in the histogram; audit mode later. Jailbroken or rooted device: attestation fails; verified path unavailable.
+
+**Token.** Unchanged in shape from Revision 8: issuer `verifier.showyourwork` for now, with the device attestation and build hash as additional claims; provider issuers replace it per provider when they publish a JWKS.
+
+**Build order change.** The verified path is a phone app (iOS first, Android second) sharing the TypeScript exhibit code with the web app. The web app remains the local mode and the Wrapped card. The server shrinks to: validate attestation, sign, serve the verify page. The export-link gating check still applies, now for the app's fetch rather than a server's.
 
 ## Launch strategy
 
