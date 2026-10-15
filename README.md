@@ -8,15 +8,17 @@ Drop your ChatGPT, Claude, Grok, or Claude Code export onto a page. Get a sharea
 
 ## Who this is for
 
-People who own their AI account: freelancers, consultants, small-business operators, anyone working on a personal account — and employees whose employer has agreed. It does not work with company-controlled accounts (enterprise or team plans); those need the employer involved.
+This is for people who own their own AI account—freelancers, consultants, small-business operators, or anyone on a personal plan. Employees can use it if their employer has agreed. It doesn't work with company-controlled accounts (enterprise or team plans); those need the employer involved.
 
-## How your data stays yours
+## Your data
 
-Your chat history never leaves your phone. The app downloads your export directly from OpenAI, Anthropic, or xAI, computes the numbers on the device, and throws the file away. The only thing sent to our server is the numbers. The code is public, so anyone can check that.
+Your chats never leave your phone. The app downloads your export straight from OpenAI, Anthropic, or xAI, runs the numbers on your device, and deletes the file. Only the results go to our server. The code is public, so anyone can check it.
 
 ## Why a hiring manager can trust it
 
-Your phone's built-in security vouches that an unmodified copy of the app fetched the data straight from the AI company and did the math. We sign the result. The hiring manager clicks once, sees the signed numbers, the date, and where the data came from — and never sees a single chat.
+Your phone's built-in security confirms an unmodified copy of the app pulled the data directly from the AI company and did the math. We sign the record. They click once and see the signed numbers, the date, and the source—without ever seeing a single chat.
+
+*The signature confirms the process — a genuine app, data from the AI company, numbers unaltered. It is not a judgment of the candidate.*
 
 ## Why
 
