@@ -216,9 +216,6 @@ The product fails if a candidate leaks a client's data or a hiring manager suspe
 **Privacy**
 
 - Local-first. Import, redaction, and extraction run on the user's machine. Publishing uploads only approved cards and the profile.
-- Provably local, not just promised. Open source shows the code but not that the live site runs it, so: a Content-Security-Policy that blocks outgoing requests (only `api.anthropic.com`, and only once the user adds a key), no analytics or third-party scripts, works with Wi-Fi off after loading, a copy users can run from their own disk, the build's git commit on the page, and a README section that walks a skeptic through checking all of it.
-- Users get their data through the official export buttons; the tool never signs in to their accounts, controls their browser, or scrapes anything.
-- The two moments data leaves the machine are labeled at the point of action: the optional AI extraction (show the exact redacted text before sending) and publishing (only approved cards).
 - Two-pass redaction: pattern-based (emails, phones, money, keys, paths, URLs), then a model pass that flags names, companies, addresses, and anything that reads as confidential. User confirms every replacement.
 - Deny list the user maintains: names, company names, project code names. Applied before any model sees the text.
 - Excerpt bounds are user-set. The extractor proposes; the user trims.
@@ -312,7 +309,7 @@ Decision: build it as a portfolio piece with a product story, not as a business.
 
 **Open questions**
 
-- [x] Does Claude Code's session format expose enough to reconstruct a build trail cleanly? **Yes** (checked Oct 14, 2026 against Claude Code 2.1.x). Each line carries `type`, `timestamp`, `sessionId`, `cwd`, `gitBranch`; assistant lines carry text and `tool_use` blocks (name + input), user lines carry prompts and `tool_result` blocks (with `is_error`). Titles come from `custom-title` / `ai-title` lines. Subagent transcripts live in `<sessionId>/subagents/agent-*.jsonl` and are skipped. Injected text (`isMeta`, compact summaries, `<task-notification>`, local-command output) is filtered. Single sessions reach 150 MB and a heavy user's folder runs to gigabytes, so the importer reads files one at a time and caps stored tool output at 4,000 characters.
+- [ ] Does Claude Code's session format expose enough to reconstruct a build trail cleanly? Check one real session file before weekend 1.
 - [ ] How long are typical ChatGPT and Claude exports for a heavy user, and does the browser handle a 200 MB zip without choking?
 - [ ] Public or password-protected by default? Default public, password optional, is the current call.
 - [ ] Should the CRE Base repo be fully public or a sanitized module? Decide before the shipped card is written.
