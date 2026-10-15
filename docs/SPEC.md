@@ -1,6 +1,6 @@
 # Show Your Work — Product Spec
 
-Oct 14, 2026 · Benjamin Adelmann · Revision 4
+Oct 14, 2026 · Benjamin Adelmann · Revision 5
 
 A free, open-source tool that turns a power user's real AI history — Claude, ChatGPT, Claude Code, GitHub — into a shareable profile of how they work with AI, and a verifiable portfolio for hiring managers. Goal as of revision 2: maximum reach, not revenue. The popularity of the tool is the sell; Benjamin's own portfolio is the first user.
 
@@ -108,6 +108,35 @@ The candidate is the user and the customer. The hiring manager is only the reade
 **Page order:** header · calibration slope · delegation ladder · the candidate's categories, in their order, quota-filled · failure and recovery · growth curve · strips · receipt footer.
 
 **Build order changes:** stakes classifier and ladder detector move up to weekend 2, ahead of any category work. Turn-labeling and clustering replace the fixed-library heuristics. The 30-item library stays in the repo as data, not as the first build.
+
+## Revision 5 — receipts, rubrics, and the one chart that matters
+
+Where this conflicts with Revisions 3 and 4, this wins. Design rule for the whole product: simple, immediately comprehensible, instantly sellable to the hiring manager, instantly useful to the candidate. Five charts maximum on the page, one sentence each.
+
+**Proof first.** Line two of the page, under the name: "Generated from 412 real sessions, Mar 2025–Oct 2026. The candidate chose what to show; nothing shown was edited. Receipt ↓" Computed content and the candidate's own words are set in two visibly different inks, explained once on that line, so a reader never wonders which is which.
+
+**Stakes rubric (deterministic, printed on the verify page).** Four signals per session, each 0–2; sum → low 0–2, medium 3–5, high 6–8. A model refines only sessions the rules cannot place, and those are flagged.
+
+| Signal | 0 | 1 | 2 |
+| --- | --- | --- | --- |
+| Consequence domain | none | one of: money under $10K, internal process | money $10K+, legal (contract, lease, demand, liability, statute), tax, medical, compliance, employment/HR, credentials or security |
+| Audience | candidate only | internal team | addressed to a third party: email, letter, post, filing |
+| Reversibility | draft or explore | edit something that exists | send, sign, pay, deploy, delete |
+| Scale | one item | several | a batch, or a system others depend on |
+
+Care behaviors measured at each level, the same six for every candidate: asked for sources · cross-checked with a second source or tool · pushed back or corrected · ran a test or inspected the result before using it · stated constraints up front · declined to delegate.
+
+**Rung × precision: the paramount chart.** Per session: rung 1–5 as in Revision 4; precision = share of delegated output accepted without correction (correction signals: "no," "wrong," "that's not what I asked," "undo," "revert," repeated attempts at one task; in Claude Code, failed tests and reverted edits); rework share = turns spent fixing errors caused by earlier delegated work, over all turns; efficiency = tasks completed per hour of session time. Chart: x = rung, y = precision, one dot per session, dot size = session length; a small second panel shows rework share and efficiency by rung. Readings: precision holds as rung rises = delegates and specifies well. Rung 5 with low precision and high rework = "just do it, you decide," and the efficiency panel shows that person is slower than a careful rung-3 user. Rung 1–2 with high precision = careful, has not learned to delegate. No quadrant labels on the hiring-manager page; one sentence under the chart.
+
+**Growth curve with milestones.** Markers on the timeline: first Claude Code session, first script, first scheduled task, first tool or MCP use, first multi-step delegation, first request for sources. Rates run underneath. The reader reads the dots.
+
+**Reasoning checks as a category family.** The fallacy and bias vocabulary is used only for what the candidate caught, never to profile the candidate: "spotted base-rate neglect in the model's estimate," "rejected a sunk-cost framing," "noticed the model anchoring on my first number." Naming the error type makes the card sharper. Profiling the person is out.
+
+**The abandonment problem.** An exhibit that looks ordinary will make an ordinary candidate leave or try to cut it. Two answers. First, self-selection is the point: the app never shows invented impressiveness, so the people who publish are the impressive ones, and using it at all is a transparent move a reader can credit. Second, the app is worth using without publishing: every exhibit is computed privately first, and a flat slope or a rung-5-low-precision pattern comes with a plain statement of what the strong shape looks like. The candidate who returns in three months with a better curve has the best growth exhibit on the site. The Wrapped card still works for everyone, so the sharing loop keeps running.
+
+**Page order, final for now:** name · proof line · calibration slope · rung × precision · growth with milestones · the candidate's categories, quota-filled · failure and recovery · strips (shipped, domains) · receipt footer with the rubric link.
+
+**Build order:** stakes rubric and the six care behaviors → rung detector, correction and rework signals → rung × precision chart → growth with milestones → labels, clustering, categories, veto/refill → failure and recovery → page and receipt.
 
 ## Launch strategy
 

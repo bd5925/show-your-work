@@ -36,15 +36,16 @@ type Session = { id: string; source: 'chatgpt'|'claude'|'grok'|'claudecode'|'oth
 type Turn = { role: 'user'|'assistant'|'tool'; at: string; text: string; tool?: string; meta?: Record<string, unknown> }
 ```
 
-## Categories and exhibits (Revision 4 — see SPEC.md)
-- `src/labels.ts`: label every user turn with a short free-text description of what the person did (heuristic first; model with user key when available).
-- `src/categories.ts`: cluster labels into candidate-named categories; the candidate keeps/renames/merges. `data/library.json` holds the 30-item fallback vocabulary — data, not the first build.
-- `src/moments.ts`: ranked pool per category, quota 3–7, veto pulls the next-ranked moment. One moment, one category.
-- `src/exhibits/stakes.ts`: classify sessions low/medium/high (money, legal, third-party, deployable code, tax/medical → high) and measure care behaviors per level. Output: rates with denominators. This is the calibration slope and it ships FIRST.
-- `src/exhibits/ladder.ts`: detect the delegation rung (1 ask → 5 builds-things-that-run) per session; highest rung, when, share of time.
-- `src/exhibits/growth.ts`: the stakes and ladder metrics plus constraints/verification/pushback by month; first-use date per tool.
-- `src/exhibits/failure.ts`: dead ends and recoveries as a moment category.
-- Candidate can hide any exhibit; numbers are never editable. Footer states exhibits shown and the window.
+## Exhibits and categories (Revision 5 — SPEC.md wins on conflict)
+Build in this order. Each exhibit = one chart + one sentence. Five charts max on the page.
+- `src/exhibits/stakes.ts`: deterministic rubric, four signals × 0–2 (consequence domain, audience, reversibility, scale) → low/medium/high; the six care behaviors per session (sources, cross-check, pushback, test/inspect, constraints up front, declined to delegate). Output rates WITH denominators. Model refines only unplaceable sessions, flagged.
+- `src/exhibits/ladder.ts`: rung 1–5 per session; correction signals ("no/wrong/undo/revert", repeated attempts, failed tests, reverted edits); precision = accepted-without-correction share; rework share = error-fixing turns / all turns; efficiency = tasks per session hour.
+- `src/charts/rungPrecision.ts`: x = rung, y = precision, dot per session sized by length; side panel rework + efficiency by rung. THE chart.
+- `src/charts/growth.ts`: monthly rates + milestone markers (first Claude Code, first script, first scheduled task, first tool/MCP, first multi-step delegation, first sources request).
+- `src/labels.ts` → `src/categories.ts` (cluster labels into candidate-named categories; `data/library.json` is fallback vocabulary) → `src/moments.ts` (ranked pools, quota 3–7, veto/refill, one moment one category). Reasoning-check labels may name the fallacy the candidate caught; never profile the candidate.
+- `src/exhibits/failure.ts`: dead ends and recoveries.
+- Page: name · proof line ("Generated from N real sessions, window. Candidate chose what to show; nothing shown was edited. Receipt ↓") · two inks: computed vs candidate's words · exhibits · categories · receipt footer linking the rubric. Candidate can hide an exhibit, never edit numbers.
+- Private first: everything renders locally before any publish; a weak shape gets a plain note of what the strong shape looks like.
 
 ## Rules
 - Real exports never enter the repo. Tests run on `samples/` only.
@@ -58,9 +59,9 @@ type Turn = { role: 'user'|'assistant'|'tool'; at: string; text: string; tool?: 
 1. `schema.ts`, `importers/chatgpt.ts`, `importers/claude.ts`, `importers/claudecode.ts`, `importers/grok.ts`, with synthetic samples and tests. Grok's export format is the least documented: get a real export first, inspect it, then write the importer; if there is no usable export, fall back to a paste-in importer for individual conversations.
 2. `redact.ts`, `stats.ts`, drop-zone UI that shows the stats.
 3. `card/` — design and PNG export. This is the growth engine; spend real time on the design.
-4. `exhibits/stakes.ts` and `exhibits/ladder.ts` — calibration slope and delegation ladder. These are the page's reason to exist; build them before any category work.
-4b. `labels.ts` → `categories.ts` clustering → `moments.ts` pools with veto/refill → review UI (keep/rename/merge, quota, order).
-4c. `exhibits/growth.ts`, `exhibits/failure.ts`.
+4. `exhibits/stakes.ts` → `exhibits/ladder.ts` → `charts/rungPrecision.ts` → `charts/growth.ts`. These are the page's reason to exist.
+4b. `labels.ts` → `categories.ts` → `moments.ts` → review UI (keep/rename/merge, quota, order, veto).
+4c. `exhibits/failure.ts`, proof line, two-ink rendering, receipt footer.
 5. `llm.ts` optional extraction, `portfolio/` generator, provenance footer, deploy.
 6. Benjamin's own card and portfolio live. Then launch per `docs/SPEC.md` → Launch strategy.
 
