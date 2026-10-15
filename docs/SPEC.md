@@ -1,6 +1,6 @@
 # Show Your Work — Product Spec
 
-Oct 14, 2026 · Benjamin Adelmann · Revision 7
+Oct 14, 2026 · Benjamin Adelmann · Revision 8
 
 A free, open-source tool that turns a power user's real AI history — Claude, ChatGPT, Claude Code, GitHub — into a shareable profile of how they work with AI, and a verifiable portfolio for hiring managers. Goal as of revision 2: maximum reach, not revenue. The popularity of the tool is the sell; Benjamin's own portfolio is the first user.
 
@@ -199,6 +199,49 @@ Supersedes the proof section of Revision 6. Anything the candidate hands over ca
 **Privacy of the stats.** Personal sessions (hobby, health, family, anything not work) are excluded from all exhibits; they would dilute the numbers. Own-business and employer work are the material. The candidate confirms the tagging, reviews every card for anything they are not permitted to share, and accepts one acknowledgment of responsibility. No per-session affirmation flow.
 
 **Build consequence.** The verifier moves to the front of the plan, right after importers: (1) confirm export-link behavior for ChatGPT and Claude; (2) verifier v1 with platform-origin fetch or notarization, whichever is confirmed; (3) signing, the verify page, and the excerpt-attestation badge; (4) enclave attestation as v2. The exhibits are computed by the same code in both modes, so local and verified never disagree.
+
+## Revision 8 — the attestation spec
+
+Supersedes the proof design in Revision 7 where they differ. Incorporates a review from a second model (Grok); its share-link dossier is rejected, the rest is adopted with two corrections.
+
+**Two layers; only the first is signed.**
+- *Attestation*: facts a signer vouches for. Verified in the browser against the signer's public keys. The site that renders the page is not a trusted party.
+- *Review*: the narrative, categories, and annotations. Never called authentic. Every claim a reader might rely on points at a signed span they can check.
+
+**One token format, two kinds of signer.** A JWS (Ed25519; JWKS at `/.well-known/`). Issuers are pinned; a token whose issuer is not on the list is rejected even if its signature is valid.
+- *Provider issuer* (`openai.com`, `anthropic.com`, `x.ai`): the end state. The provider signs server-side account state.
+- *Third-party issuer* (`verifier.showyourwork`, running in an attested enclave): the bridge. It signs what it computed from a platform-origin export. Weaker, and labeled as such on the verify page.
+The verify page is one code path; the issuer tells the reader which kind they are looking at.
+
+**What a token carries.**
+- A stable pseudonymous account id (never the email). Same id across tokens means one account. Email is a separate optional claim the candidate can reveal to one employer.
+- Account age, first and last activity, and a monthly histogram of sessions and user messages. This is what stops three heroic chats from passing as a work history.
+- Per-session Merkle roots over canonical message hashes (role, model, timestamp, parent id, content). Edits and regenerations stay in the tree as branches.
+- Inclusion proofs for every quoted passage, so a reader can check a quote without receiving anything else.
+- Omission counts inside the signature: "48 messages, 12 omitted." Omission is allowed; silent deletion is the attack.
+- The exhibit values with denominators, computed by the open-source exhibit code at a stated version and hash.
+- A recruiter nonce when one was supplied (below).
+
+**Two attestation modes.**
+- *Portfolio mode*: self-selected. The token says so: "6 of 840 sessions, account opened March 2024." Honest, and obviously a highlight reel.
+- *Audit mode*: the hiring manager sends a random nonce first. The attestation binds to it and includes a sample of sessions drawn unpredictably from the nonce and the account (HKDF over signer key, account id, nonce). The candidate cannot pre-pick the sample and cannot stage a fresh account after the nonce exists. They may still omit; the omission count is signed. This is the mode a hiring manager should ask for, and it replaces the exclusion ledger of Revision 6 as the answer to cherry-picking.
+
+**The verify page shows three things, visually separated.** Verified facts (signature valid, issuer on the list, nonce matches, histogram, models, time span). Proven excerpts (a quote renders only if its inclusion proof chains to a signed root). Unverified narrative (labeled as commentary wherever no proof backs it).
+
+**Rejected from the review.** The share-link dossier: a share link exposes an entire conversation to the reader, which this product never does. The excerpt-attested badge gives the same proof without exposure. TLS notarization is narrowed to small endpoints (account age, counts) if used at all; it is impractical over a full export.
+
+**Three providers, never merged.** Each provider is a separate issuer with its own keys and its own token. The page shows up to three attestations side by side. Nothing is combined into one number.
+
+**Strategy.** Publish the one-page spec and the open verifier first. The third-party issuer makes the product usable now. One provider implementing a small `POST /attestations` endpoint makes it real; the endpoint is small on their side because they already store the chats and already run the export. xAI is the most likely first issuer. The others join the day they publish a JWKS. Consumer deletion rights stand: a token proves the account state the signer was willing to sign at that time, omissions included, not every chat that ever existed.
+
+**Gating checks before build.** For each of ChatGPT, Claude, and Grok: does the account export exist, what is its format, and is the download link fetchable by the verifier without the user's login session? Record the answers here.
+
+**Legal posture (not legal advice; counsel before audit mode and before any employer-facing feature).**
+- A candidate's own export from a personal account is theirs to process locally. A verifier fetching a platform download link on their behalf sits near providers' automated-access clauses; the link is user-initiated and signed, which helps. Check each provider's terms before shipping that route.
+- Employer material in a personal account is the candidate's exposure; the tool's defaults are load-bearing: stats only on the verified page, candidate-reviewed redacted excerpts, nothing stored, one acknowledgment of responsibility.
+- Hiring-tool regulation (NYC Local Law 144, Colorado's AI Act, the EU AI Act's employment category): candidate-initiated, no scores, no rankings, no employer-side selection keeps the product outside most definitions. Audit mode is the edge; the no-score rule is absolute.
+- The verifier processes personal data: privacy policy, data minimization, and ephemeral processing from v1; the enclave makes "we cannot read it" true rather than promised.
+- Never "Verified by ChatGPT." Only "attested by issuer openai.com" when it is.
 
 ## Launch strategy
 
