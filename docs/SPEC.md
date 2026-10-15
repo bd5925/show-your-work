@@ -1,6 +1,6 @@
 # Show Your Work — Product Spec
 
-Oct 14, 2026 · Benjamin Adelmann · Revision 3
+Oct 14, 2026 · Benjamin Adelmann · Revision 4
 
 A free, open-source tool that turns a power user's real AI history — Claude, ChatGPT, Claude Code, GitHub — into a shareable profile of how they work with AI, and a verifiable portfolio for hiring managers. Goal as of revision 2: maximum reach, not revenue. The popularity of the tool is the sell; Benjamin's own portfolio is the first user.
 
@@ -85,6 +85,29 @@ Two changes. The seven fixed kinds become a library the candidate chooses from, 
 **What this does to the build.** Extraction now has three jobs: classify every user turn by category (cheap, batched), compute the exhibits from the full history (local, no model needed for most), and rank pools per category (model, once). The browser-only constraint holds for stats and heuristics; category classification over hundreds of sessions needs the user's API key or a very good heuristic pass. Ship heuristics for ten categories first; the other twenty are model-only until proven otherwise.
 
 **Revised hiring-manager page order:** header · habit rates and calibration strip · the candidate's categories in their order, quota-filled · failure and recovery · where the model caught me · delegation map · growth curve · domain breadth · build trails · provenance footer. Ninety seconds for the first two zones; the rest for whoever keeps reading.
+
+## Revision 4 — the candidate owns the page
+
+The candidate is the user and the customer. The hiring manager is only the reader. Everything on the page is the candidate's choice; the tool's job is to find the best material and compute the exhibits honestly. Cherry-picking is the point. Fabrication is the only thing ruled out, because a reader who stops believing the page stops reading it.
+
+**Rule:** the candidate decides what is shown; what is shown is computed from the history, not edited by hand. The footer carries the receipt: "7 of 9 exhibits shown · window Mar 2025–Oct 2026."
+
+**Discovered categories replace the preset library.** Pass one labels every user turn with a short free-text description of what the person did. Cluster the labels. The largest clusters become proposed categories named from the candidate's own behavior ("Catching invented numbers," "Negotiation prep," "Tightening a brief"). The candidate keeps, renames, merges, or deletes, then sets quotas and reviews moments with veto-and-refill as in Revision 3. The 30-item library survives only as a fallback vocabulary for thin histories and as suggestions for what might be missing. Every page ends up with categories nobody else has.
+
+**The four exhibits that carry the page.** Each is computed over the whole chosen window. The candidate can hide one, never edit one.
+
+| Exhibit | Mechanism | What the reader looks for |
+| --- | --- | --- |
+| Calibration slope | Classify each session's stakes: dollar amounts, contract or legal terms, anything addressed to a third party, deployable code, tax or medical → high; internal drafting and analysis → medium; brainstorming, learning, casual → low. Measure care behaviors at each level: asked for sources, cross-checked with a second source or tool, pushed back or corrected, said "are you sure," declined to let the model do it. | The slope, not the level. "Verified in 9% of low-stakes sessions, 31% medium, 68% high." Rising = calibrated. Flat-high = thorough but slow. Flat-low = will paste a hallucinated number into a lease. Inverted = red flag. |
+| Delegation ladder | Five rungs: (1) ask-and-answer, (2) drafting and editing, (3) directing multi-step work with constraints, (4) delegating whole tasks and verifying the result, (5) building things that run without you: scripts, automations, agents, apps. Each rung has detectable evidence; rung 5 is Claude Code sessions, scheduled tasks, tool or MCP use, batch jobs. | Highest rung reached, when, and share of time at each. A year of use that never leaves rungs 1–2 is the tell that the person does not understand the tools. Rung 5 is the opposite tell. |
+| Growth curve | Bucket sessions by month. Per month: constraints per prompt, verification rate, pushback rate, turns per session, highest ladder rung, first use of each tool. | Shape over level. Corrections falling while constraints rise means the prompts got good enough that the model stopped needing correction. First-tool dates show adoption speed. Answers "is this real or did he start last month" in one glance. |
+| Failure and recovery | Candidate moments from a category nobody volunteers: dead ends, abandoned approaches, what came next. Selected and vetoed like any other category. | The most credible thing on the page, because nobody shows it. |
+
+**Demoted to strips:** shipped work (the resume has it; build trails stay as links), domain breadth, where-the-model-caught-me (folds into failure and recovery), habit rates (fold into the calibration exhibit as its denominators).
+
+**Page order:** header · calibration slope · delegation ladder · the candidate's categories, in their order, quota-filled · failure and recovery · growth curve · strips · receipt footer.
+
+**Build order changes:** stakes classifier and ladder detector move up to weekend 2, ahead of any category work. Turn-labeling and clustering replace the fixed-library heuristics. The 30-item library stays in the repo as data, not as the first build.
 
 ## Launch strategy
 

@@ -36,11 +36,15 @@ type Session = { id: string; source: 'chatgpt'|'claude'|'grok'|'claudecode'|'oth
 type Turn = { role: 'user'|'assistant'|'tool'; at: string; text: string; tool?: string; meta?: Record<string, unknown> }
 ```
 
-## Categories (Revision 3 — see SPEC.md)
-A library of 30 categories in four families (judgment, expertise, working_style, character), defined once in `src/categories.ts` as `{ id, family, label, description, heuristic?: (turns) => Candidate[] }`. The candidate picks ≤7, orders them, sets a quota of 3–7 each. Extraction builds a ranked pool per category; vetoes pull the next-ranked moment. One moment, one category. Ship heuristics for the first ten (judgment family) before any model-based classification.
-
-## Exhibits (computed from the whole history, never from selected moments)
-`src/exhibits/`: habit rates (with denominators), calibration by stakes, growth curve by quarter, failure-and-recovery, where-the-model-caught-me, delegation map, domain breadth, build trails. Candidate can hide an exhibit, never edit its numbers. No exhibit renders as a single number or grade.
+## Categories and exhibits (Revision 4 — see SPEC.md)
+- `src/labels.ts`: label every user turn with a short free-text description of what the person did (heuristic first; model with user key when available).
+- `src/categories.ts`: cluster labels into candidate-named categories; the candidate keeps/renames/merges. `data/library.json` holds the 30-item fallback vocabulary — data, not the first build.
+- `src/moments.ts`: ranked pool per category, quota 3–7, veto pulls the next-ranked moment. One moment, one category.
+- `src/exhibits/stakes.ts`: classify sessions low/medium/high (money, legal, third-party, deployable code, tax/medical → high) and measure care behaviors per level. Output: rates with denominators. This is the calibration slope and it ships FIRST.
+- `src/exhibits/ladder.ts`: detect the delegation rung (1 ask → 5 builds-things-that-run) per session; highest rung, when, share of time.
+- `src/exhibits/growth.ts`: the stakes and ladder metrics plus constraints/verification/pushback by month; first-use date per tool.
+- `src/exhibits/failure.ts`: dead ends and recoveries as a moment category.
+- Candidate can hide any exhibit; numbers are never editable. Footer states exhibits shown and the window.
 
 ## Rules
 - Real exports never enter the repo. Tests run on `samples/` only.
@@ -54,8 +58,9 @@ A library of 30 categories in four families (judgment, expertise, working_style,
 1. `schema.ts`, `importers/chatgpt.ts`, `importers/claude.ts`, `importers/claudecode.ts`, `importers/grok.ts`, with synthetic samples and tests. Grok's export format is the least documented: get a real export first, inspect it, then write the importer; if there is no usable export, fall back to a paste-in importer for individual conversations.
 2. `redact.ts`, `stats.ts`, drop-zone UI that shows the stats.
 3. `card/` — design and PNG export. This is the growth engine; spend real time on the design.
-4. `categories.ts` (first ten heuristics), `moments.ts` pools + veto/refill, review queue UI with pick/quota/order.
-4b. `exhibits/` — habit rates and calibration first; they are the page's reason to exist.
+4. `exhibits/stakes.ts` and `exhibits/ladder.ts` — calibration slope and delegation ladder. These are the page's reason to exist; build them before any category work.
+4b. `labels.ts` → `categories.ts` clustering → `moments.ts` pools with veto/refill → review UI (keep/rename/merge, quota, order).
+4c. `exhibits/growth.ts`, `exhibits/failure.ts`.
 5. `llm.ts` optional extraction, `portfolio/` generator, provenance footer, deploy.
 6. Benjamin's own card and portfolio live. Then launch per `docs/SPEC.md` → Launch strategy.
 
