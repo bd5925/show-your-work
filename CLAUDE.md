@@ -2,6 +2,13 @@
 
 Read `docs/SPEC.md` first. Revision 2 is the current plan: browser-based, local-first, heuristics first, LLM optional.
 
+## Revision 9 overrides (read first)
+- NUMBERS ONLY. No quoted moments, no excerpts, no inclusion proofs. `src/moments.ts` and the review queue for cards are removed from scope. Categories become rates on a radar chart (`src/charts/radar.ts`): axis = discovered category, value = rate with denominator; no axis under 20 sessions; never the word "score".
+- WHOLE UNITS ONLY. Selection = a whole project or a whole date range (`src/units.ts`). Nothing inside a unit can be excluded. The token reports unit vs account ("840 sessions; included: Project X, 112 sessions, Mar–Oct 2026"). Project markers: Claude Projects (export), Claude Code (folder), Codex (repo); ChatGPT and Grok markers must be confirmed from real exports.
+- Trust runs on a HARDWARE-ATTESTED PHONE APP (Revision 10): iOS (App Attest) first, Android (Play Integrity) second. The app fetches the export from the provider's domain itself (allowlisted domains, cert pinning), computes exhibits on-device with the shared TypeScript exhibit code, and sends ONLY numbers + export hash + serving domain + device attestation to the server. The server validates the attestation with Apple/Google, signs, serves the verify page. No server-side fetch of exports, ever. Reproducible builds so the attested build hash matches public code. Desktop = local mode only.
+- Repo stays public. Employer-side features, if ever, go in a separate private repo.
+- Page: name · signed statement · calibration slope · rung × precision · growth with milestones · category radar · failure-and-recovery rate · receipt.
+
 ## What this is
 A static web app. User drops an AI-history export zip (ChatGPT, Claude, Grok) or a folder of Claude Code `.jsonl` sessions onto the page. Everything parses in the browser. Outputs: a shareable PNG card, an optional portfolio page, resume bullets.
 
@@ -75,7 +82,7 @@ Two modes share one exhibit codebase (`src/exhibits/`, pure functions over the n
 1. `schema.ts`, `importers/chatgpt.ts`, `importers/claude.ts`, `importers/claudecode.ts`, `importers/grok.ts`, with synthetic samples and tests. Grok's export format is the least documented: get a real export first, inspect it, then write the importer; if there is no usable export, fall back to a paste-in importer for individual conversations.
 1b. Confirm whether ChatGPT and Claude export download links are fetchable server-side without a login session. Record the answer in docs/SPEC.md. This decides the verifier route.
 2. `redact.ts`, `stats.ts`, drop-zone UI that shows the stats.
-2b. `verifier/` v1: platform-origin fetch or notarization (per 1b), exhibit computation via `src/exhibits/`, signing, verify page, excerpt-attested badge.
+2b. `app/` (React Native or Expo, iOS first): export fetch from allowlisted provider domains, on-device exhibits via shared `src/exhibits/`, App Attest / Play Integrity, send numbers-only payload. `server/`: attestation validation, signing, verify page. Reproducible build pipeline.
 3. `card/` — design and PNG export. This is the growth engine; spend real time on the design.
 4. `exhibits/stakes.ts` → `exhibits/ladder.ts` → `charts/rungPrecision.ts` → `charts/growth.ts`. These are the page's reason to exist.
 4b. `labels.ts` → `categories.ts` → `moments.ts` → review UI (keep/rename/merge, quota, order, veto).

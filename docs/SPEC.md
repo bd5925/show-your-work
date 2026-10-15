@@ -1,6 +1,6 @@
 # Show Your Work — Product Spec
 
-Oct 14, 2026 · Benjamin Adelmann · Revision 8
+Oct 14, 2026 · Benjamin Adelmann · Revision 9
 
 A free, open-source tool that turns a power user's real AI history — Claude, ChatGPT, Claude Code, GitHub — into a shareable profile of how they work with AI, and a verifiable portfolio for hiring managers. Goal as of revision 2: maximum reach, not revenue. The popularity of the tool is the sell; Benjamin's own portfolio is the first user.
 
@@ -242,6 +242,20 @@ The verify page is one code path; the issuer tells the reader which kind they ar
 - Hiring-tool regulation (NYC Local Law 144, Colorado's AI Act, the EU AI Act's employment category): candidate-initiated, no scores, no rankings, no employer-side selection keeps the product outside most definitions. Audit mode is the edge; the no-score rule is absolute.
 - The verifier processes personal data: privacy policy, data minimization, and ephemeral processing from v1; the enclave makes "we cannot read it" true rather than promised.
 - Never "Verified by ChatGPT." Only "attested by issuer openai.com" when it is.
+
+## Revision 9 — numbers only, whole projects only
+
+Supersedes earlier revisions where they differ. Three decisions.
+
+**Numbers only.** Quoted moments are cut. No session content ever leaves the export, which removes most privacy and legal weight and shrinks the verifier. Inclusion proofs and the excerpt-attested badge are dropped. Categories survive as a radar chart: each axis is a category discovered in the candidate's own history; each value is a rate with its denominator ("pushed back in 31% of 112 sessions"). Every axis is labeled as a rate, never a score. A category with fewer than 20 sessions behind it gets no axis.
+
+**Whole projects only.** The selection unit is a whole project or a whole date range, everything inside it. Nothing inside the unit can be removed. The signed statement reports the unit against the account: "Account: 840 sessions. Included: Project 'Moorpark center', 112 sessions, Mar–Oct 2026." Project markers by platform: Claude Projects (listed in the export); Claude Code (one folder per project); Codex (cloud tasks tied to a repository; CLI sessions local); ChatGPT Projects (whether the export marks project membership must be checked); Grok (folders or projects must be checked). Where no marker exists, the date range is the unit. Omission counts from Revision 8 remain in the token for the account as a whole.
+
+**Where trust runs.** Anything on the candidate's computer can be edited by the candidate, so the trusted part cannot run there. Two things run on the verifier instead: the fetch (the verifier retrieves the export from the provider's servers using the export download link, so the candidate never touches the file) and the computation (the verifier computes the numbers and signs them). The hiring manager opens the verify page and checks the signature on the spot. The enclave upgrade lets the operator prove it cannot read exports; for a numbers-only v1 it is not required. A design in which the local app attests its own integrity and checks the export itself is rejected: a modified app reports itself unmodified, and no app can distinguish a doctored export from a real one on the same disk.
+
+**Repository stays public.** The spec, verifier, and exhibit code are the trust and the moat: a verifier nobody can read is not trusted, a spec nobody can see is not adopted, and the launch depends on both. Any employer-side product is built later in a separate private repository on top (open core).
+
+**Page, final for now:** name · signed statement (issuer, account size, included unit, date, click to verify) · calibration slope · rung × precision · growth with milestones · category radar · failure-and-recovery rate · receipt.
 
 ## Launch strategy
 
