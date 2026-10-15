@@ -1,6 +1,6 @@
 # Show Your Work — Product Spec
 
-Oct 14, 2026 · Benjamin Adelmann · Revision 6
+Oct 14, 2026 · Benjamin Adelmann · Revision 7
 
 A free, open-source tool that turns a power user's real AI history — Claude, ChatGPT, Claude Code, GitHub — into a shareable profile of how they work with AI, and a verifiable portfolio for hiring managers. Goal as of revision 2: maximum reach, not revenue. The popularity of the tool is the sell; Benjamin's own portfolio is the first user.
 
@@ -172,6 +172,33 @@ Where this conflicts with earlier revisions, this wins.
 The proof line in the header states which levels the page has: "Verified: 5 of 7 cards link to platform-hosted originals · export hash logged Oct 14, 2026 · forensic checks 9/9 · spot-check ready." The launch carries a cause: asking OpenAI and Anthropic to sign exports.
 
 **Build additions:** context tagger and exclusion ledger before any publish path; share-link capture per card; hash-and-log at import; forensic checks as a test suite with a published report.
+
+## Revision 7 — the verifier
+
+Supersedes the proof section of Revision 6. Anything the candidate hands over can be fabricated, so proof requires the data to reach the verifier from the platform, not from the candidate. The verifier is the product.
+
+**What it is.** An open-source service that obtains the candidate's export from the platform, computes every exhibit, signs the numbers with its key, and discards the data. The hiring manager clicks "verify" and sees the signed values, the platform origins, the date, and the verifier's attestation. Nothing else, ever: no session, no content, no prior-employer material.
+
+**How the data arrives from the platform.** Two routes; the first to be confirmed decides the build.
+
+| Route | Mechanism | Status |
+| --- | --- | --- |
+| Platform-origin fetch | ChatGPT and Claude deliver exports as a download link on their own domain. The candidate pastes the link; the verifier fetches it directly, so the file came from the platform's servers and the candidate never touched it. | Must check whether export links are fetchable server-side or require the user's login session. |
+| TLS notarization | The candidate's browser fetches the export while logged in; a notary (TLSNotary, Reclaim Protocol) cryptographically witnesses that the response came from the platform's domain without seeing the contents. | Existing, shipping technology. More integration work; no dependence on export-link behavior. |
+
+**Privacy of the verifier.** Version 1: open-source server, ephemeral processing, nothing stored, published privacy terms. Version 2: the same code in an attested enclave (AWS Nitro or equivalent) with remote attestation published on every verification, so even the operator cannot read what passes through. The attestation is part of what the hiring manager checks.
+
+**What the verifier signs.** Session count and window; exclusion counts by reason and by stakes band; every exhibit's values with denominators; per card, that the redacted excerpt appears verbatim in platform-origin data (an attested badge, with no content shown); the forensic consistency report (a filter inside the verifier, not proof on its own); verifier version and code hash; date.
+
+**Two modes.** *Local*: everything in the browser, nothing uploads, no proof. Produces the Wrapped card and the private self-review. *Verified*: through the verifier. Produces the hiring page. Verified is the product; local is the funnel.
+
+**What is dropped.** Platform share links (a reader never sees a session). The public timestamp log as a standalone proof (it only dates the verifier's signature). Any app access to GitHub (build trails are optional pasted links, labeled unverified). The proof line as a sentence: it is now a signature the reader checks.
+
+**Claude Code sessions are unverifiable today.** They are local files with no platform origin. They are labeled "unverified source" and kept out of the verified exhibits until Anthropic offers a signed transcript or a server-side session export. This is the project's one specific request to Anthropic, and the launch carries it.
+
+**Privacy of the stats.** Personal sessions (hobby, health, family, anything not work) are excluded from all exhibits; they would dilute the numbers. Own-business and employer work are the material. The candidate confirms the tagging, reviews every card for anything they are not permitted to share, and accepts one acknowledgment of responsibility. No per-session affirmation flow.
+
+**Build consequence.** The verifier moves to the front of the plan, right after importers: (1) confirm export-link behavior for ChatGPT and Claude; (2) verifier v1 with platform-origin fetch or notarization, whichever is confirmed; (3) signing, the verify page, and the excerpt-attestation badge; (4) enclave attestation as v2. The exhibits are computed by the same code in both modes, so local and verified never disagree.
 
 ## Launch strategy
 
