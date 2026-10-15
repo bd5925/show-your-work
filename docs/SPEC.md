@@ -1,6 +1,6 @@
 # Show Your Work — Product Spec
 
-Oct 14, 2026 · Benjamin Adelmann · Revision 5
+Oct 14, 2026 · Benjamin Adelmann · Revision 6
 
 A free, open-source tool that turns a power user's real AI history — Claude, ChatGPT, Claude Code, GitHub — into a shareable profile of how they work with AI, and a verifiable portfolio for hiring managers. Goal as of revision 2: maximum reach, not revenue. The popularity of the tool is the sell; Benjamin's own portfolio is the first user.
 
@@ -137,6 +137,41 @@ Care behaviors measured at each level, the same six for every candidate: asked f
 **Page order, final for now:** name · proof line · calibration slope · rung × precision · growth with milestones · the candidate's categories, quota-filled · failure and recovery · strips (shipped, domains) · receipt footer with the rubric link.
 
 **Build order:** stakes rubric and the six care behaviors → rung detector, correction and rework signals → rung × precision chart → growth with milestones → labels, clustering, categories, veto/refill → failure and recovery → page and receipt.
+
+## Revision 6 — proof, privacy, and fairness
+
+Where this conflicts with earlier revisions, this wins.
+
+**Consequence counts for whoever bears it.** The stakes rubric scores what could go wrong, not who employs the candidate. A solopreneur's own money, leases, counterparties, and tenants score exactly as an employer's would. "None" means a session with no consequence at all. Audience: a solopreneur's tenant, buyer, or counterparty is a third party.
+
+**Money on a saturating curve.** Domain points for money = 2 × (1 − e^(−amount / $50K)): $10K → 0.4, $50K → 1.3, $100K → 1.7, $1M → 2.0. Capped at 2. Because the calibration slope is a rate within each band, a large figure can only move its session into the high band; it cannot inflate anything else.
+
+**Fifteen-minute review, enforced.** Default path: accept the top 4 moments in each of ≤ 7 categories (about 7 minutes at 15 seconds a card), clear the privacy flag list (about 5 minutes), glance at the exhibits and hide any (about 2 minutes). The UI shows a running estimate. Deep review is optional and never required to publish.
+
+**Privacy and prior-employer material.** The tool cannot guarantee legality and says so; it makes the safe choice the default.
+
+- Every session gets a context tag at import: personal, own business, or employer work, inferred from topics, named entities, and source account, then confirmed by the candidate.
+- Employer-tagged sessions are excluded by default. Including one requires the candidate to affirm, per session or per employer, that they have the right.
+- Redaction catches named entities (companies, products, clients, people), figures, code identifiers, file paths, and URLs, replacing each with a typed placeholder: `[client]`, `[product]`, `[$ amount]`.
+- Cards show the judgment, not the subject: the candidate's turn plus the minimum assistant context. A paraphrase mode exists for cards whose verbatim text cannot be shown; it is labeled as paraphrase and never called verbatim.
+
+**Auditable exclusion.** Exclusion is per session, all-or-nothing, with a reason from a fixed list, and counted in the receipt. A session cannot be removed from one exhibit and kept in another. The receipt reads: "412 imported · 37 excluded (employer-confidential 31, personal 6) · exhibits computed over 375 · excluded by stakes band: low 5, medium 12, high 20." A reader sees the shape of what was removed without seeing any of it.
+
+**Efficiency on active hours only.** Session time counts active time; gaps over 15 minutes are dropped. Reported per 3 active hours, and only once a rung has 10 or more active hours; below that the chart says "not enough data."
+
+**Proof, in order of strength.** No platform signs its exports, so there is no cryptographic proof of authenticity today. What exists outside the candidate's control:
+
+| Level | Mechanism | What it proves |
+| --- | --- | --- |
+| 1. Platform-hosted originals | Each card stores its conversation id. Where the platform offers a public share link (ChatGPT does; check Claude.ai), the candidate attaches one and the reader opens the real conversation on the platform's servers. Claude Code sessions have no equivalent. | The excerpt exists, verbatim, on a server the candidate does not control. |
+| 2. Public timestamp of the export hash | At first import, the export file's hash is written to a transparency log (Sigstore Rekor or OpenTimestamps). | The data existed on that date and has not changed since. Cannot be backdated. |
+| 3. Forensic consistency report | Published with pass/fail per test: timestamps show human daily and weekly rhythms; model identifiers match public release dates; export structure matches the platform's format for that date; message id formats are right. | Fabricating a year of history that passes every test is harder than being good at the work. |
+| 4. External anchors | Build trails link to GitHub commits, timestamped by GitHub. | Shipped work happened when the trail says. |
+| 5. Interview spot-check | Cards are numbered. The reader names two; the candidate opens the originals live in their own account. | Sixty seconds; the check every hiring manager will actually use. |
+
+The proof line in the header states which levels the page has: "Verified: 5 of 7 cards link to platform-hosted originals · export hash logged Oct 14, 2026 · forensic checks 9/9 · spot-check ready." The launch carries a cause: asking OpenAI and Anthropic to sign exports.
+
+**Build additions:** context tagger and exclusion ledger before any publish path; share-link capture per card; hash-and-log at import; forensic checks as a test suite with a published report.
 
 ## Launch strategy
 

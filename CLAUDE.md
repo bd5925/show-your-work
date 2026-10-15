@@ -47,6 +47,20 @@ Build in this order. Each exhibit = one chart + one sentence. Five charts max on
 - Page: name · proof line ("Generated from N real sessions, window. Candidate chose what to show; nothing shown was edited. Receipt ↓") · two inks: computed vs candidate's words · exhibits · categories · receipt footer linking the rubric. Candidate can hide an exhibit, never edit numbers.
 - Private first: everything renders locally before any publish; a weak shape gets a plain note of what the strong shape looks like.
 
+## Proof, privacy, exclusion (Revision 7 — the verifier; SPEC.md wins on conflict)
+Two modes share one exhibit codebase (`src/exhibits/`, pure functions over the normalized schema):
+- **local**: browser only, nothing uploads, no proof. Wrapped card + private self-review.
+- **verified**: `verifier/` — a separate open-source service. Gets the export FROM THE PLATFORM (candidate pastes the platform's export download link and the verifier fetches it; or TLS notarization via TLSNotary/Reclaim if links need a login session — check this FIRST). Computes exhibits with the same `src/exhibits/` code, signs {counts, window, exclusions by reason and stakes band, exhibit values with denominators, per-card excerpt-attested flags, forensic report, verifier version + code hash, date}, discards the data. Stores nothing. v2 runs in an attested enclave (Nitro) and publishes the attestation.
+- Verify page: signature check + the signed values. Never any session content.
+- `src/context.ts`: tag sessions personal / own-business / employer. Personal is excluded from all exhibits. Own-business and employer are the material. Candidate confirms tags; one acknowledgment of responsibility; no per-session affirmation.
+- `src/exclusions.ts`: per-session, all-or-nothing, reason from a fixed list; counts by reason and stakes band go into the signed receipt.
+- Claude Code sessions: `source: 'claudecode'` is unverifiable (local files). Label "unverified source"; exclude from verified exhibits; include in local mode.
+- Dropped: platform share links; standalone timestamp log; any GitHub access; the proof "sentence".
+- Stakes: consequence scores what could go wrong for whoever bears it (own business counts fully). Money points = 2 × (1 − e^(−amount/50000)), capped at 2.
+- Efficiency: active time only (drop gaps > 15 min), per 3 active hours, suppressed under 10 active hours per rung.
+- `verifier/forensics.ts`: timestamp rhythm, model-id vs public release dates, export structure by date, id formats — a filter, reported, never called proof.
+- Review budget: default path completable in 15 minutes; show a running estimate.
+
 ## Rules
 - Real exports never enter the repo. Tests run on `samples/` only.
 - Any text shown to a third party passes through `redact.ts` first.
@@ -57,7 +71,9 @@ Build in this order. Each exhibit = one chart + one sentence. Five charts max on
 
 ## Order of work
 1. `schema.ts`, `importers/chatgpt.ts`, `importers/claude.ts`, `importers/claudecode.ts`, `importers/grok.ts`, with synthetic samples and tests. Grok's export format is the least documented: get a real export first, inspect it, then write the importer; if there is no usable export, fall back to a paste-in importer for individual conversations.
+1b. Confirm whether ChatGPT and Claude export download links are fetchable server-side without a login session. Record the answer in docs/SPEC.md. This decides the verifier route.
 2. `redact.ts`, `stats.ts`, drop-zone UI that shows the stats.
+2b. `verifier/` v1: platform-origin fetch or notarization (per 1b), exhibit computation via `src/exhibits/`, signing, verify page, excerpt-attested badge.
 3. `card/` — design and PNG export. This is the growth engine; spend real time on the design.
 4. `exhibits/stakes.ts` → `exhibits/ladder.ts` → `charts/rungPrecision.ts` → `charts/growth.ts`. These are the page's reason to exist.
 4b. `labels.ts` → `categories.ts` → `moments.ts` → review UI (keep/rename/merge, quota, order, veto).
